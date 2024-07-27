@@ -122,4 +122,39 @@ const genderCount = async (req, res) => {
     }
 }
 
-module.exports = { findActiveUser, avarageAge, fruitCount, genderCount }
+const countryCountTop = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $group: {
+                    _id :"$company.location.country",
+                    countryCountTop: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $sort: {
+                    countryCountTop: -1
+                }
+            },
+            {
+                $limit: 1
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: "Top country counted",
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+module.exports = { findActiveUser, avarageAge, fruitCount, genderCount, countryCountTop }
