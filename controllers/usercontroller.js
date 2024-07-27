@@ -95,4 +95,31 @@ const fruitCount = async (req, res) => {
     }
 }
 
-module.exports = { findActiveUser, avarageAge, fruitCount }
+const genderCount = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $group: {
+                    _id: "$gender",
+                    genderCount: {
+                        $sum: 1
+                    }
+                }
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: "Gender counted",
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+module.exports = { findActiveUser, avarageAge, fruitCount, genderCount }
