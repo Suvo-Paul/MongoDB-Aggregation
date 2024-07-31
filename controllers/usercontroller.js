@@ -298,8 +298,70 @@ const countEnimTagUsers = async (req, res) => {
     }
 }
 
+// What are the names and age of users who have inactive and have "velit" as a tag
+
+const findInactiveUser = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $match: {
+                    isActive: false,
+                    tags: "velit"
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    age: 1
+                }
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: "Successfull",
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+// How many users have a phone number starting with "+1 (940)"
+
+const specialPhoneNumber = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $match: {
+                    "company.phone": /^\+1 \(940\)/
+                }
+            },
+            {
+                $count: "specialPhoneNumber"
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: "Special phone number counted",
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
 module.exports = {
     findActiveUser, avarageAge, fruitCount, genderCount,
     countryCountTop, eyeColor, averageOfTagNumber, averageOfTagNumber2,
-    countEnimTagUsers
+    countEnimTagUsers, findInactiveUser, specialPhoneNumber
 }

@@ -13,5 +13,7 @@ router.get("/eyeColor", userController.eyeColor)
 router.get("/averageOfTagNumber", userController.averageOfTagNumber)
 router.get("/averageOfTagNumber2", userController.averageOfTagNumber2)
 router.get("/countEnimTagUsers", userController.countEnimTagUsers)
+router.get("/findInactiveUser", userController.findInactiveUser)
+router.get("/specialPhoneNumber", userController.specialPhoneNumber)
 
 module.exports = router
