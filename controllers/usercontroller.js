@@ -246,10 +246,10 @@ const averageOfTagNumber2 = async (req, res) => {
                 }
             },
             {
-                $group : {
+                $group: {
                     _id: null,
-                    averageNumberOfTags : {
-                        $avg : "$numberOfTags"
+                    averageNumberOfTags: {
+                        $avg: "$numberOfTags"
                     }
                 }
             }
@@ -269,7 +269,37 @@ const averageOfTagNumber2 = async (req, res) => {
     }
 }
 
+// How many user have "enim", as one of their tags
+
+const countEnimTagUsers = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $match: {
+                    tags: "enim"
+                }
+            },
+            {
+                $count: "userWithEnim"
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: "Enim tag user counted",
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
 module.exports = {
     findActiveUser, avarageAge, fruitCount, genderCount,
-    countryCountTop, eyeColor, averageOfTagNumber, averageOfTagNumber2
+    countryCountTop, eyeColor, averageOfTagNumber, averageOfTagNumber2,
+    countEnimTagUsers
 }
