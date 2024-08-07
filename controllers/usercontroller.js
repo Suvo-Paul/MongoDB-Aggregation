@@ -360,8 +360,168 @@ const specialPhoneNumber = async (req, res) => {
     }
 }
 
+// Who has registered most recently 
+
+const recentRegistered = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $sort: {
+                    registered: -1
+                }
+            },
+            {
+                $limit: 1
+            },
+            {
+                $project: {
+                    name: 1,
+                    registered: 1
+                }
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: `Registered recently`,
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+// categorize user by their favourite fruit
+
+const categorizeUser = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $group: {
+                    _id: "$favoriteFruit",
+                    users: {
+                        $push: "$name"
+                    }
+                }
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: `Registered recently`,
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+// How many user have 'ad' as the second tag in their list of tags
+
+const secondTagAd = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $match: {
+                    "tags.1": "ad"
+                }
+            },
+            {
+                $count: "secondTagAd"
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: `Find successfully`,
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+// Find users who have both 'enim' and 'id' as their tags.
+
+const findUserWithEnimId = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $match: {
+                    tags: {
+                        $all: [
+                            "enim",
+                            "id"
+                        ]
+                    }
+                }
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: `Find successfully`,
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
+// List all companies located in the USA with their corresponding user count.
+
+const usaLocatedCompany = async (req, res) => {
+    try {
+        const response = await userCollection.aggregate([
+            {
+                $match: {
+                    "company.location.country": "USA"
+                }
+            },
+            {
+                $group: {
+                    _id: "$company.title",
+                    userCount: {
+                        $sum: 1
+                    }
+                }
+            }
+        ])
+
+        return res.status(200).send({
+            success: true,
+            message: `Find successfully`,
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: error.message
+        })
+    }
+}
+
 module.exports = {
     findActiveUser, avarageAge, fruitCount, genderCount,
     countryCountTop, eyeColor, averageOfTagNumber, averageOfTagNumber2,
-    countEnimTagUsers, findInactiveUser, specialPhoneNumber
+    countEnimTagUsers, findInactiveUser, specialPhoneNumber,
+    recentRegistered, categorizeUser, secondTagAd, findUserWithEnimId,
+    usaLocatedCompany
 }

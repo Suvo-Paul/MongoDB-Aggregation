@@ -15,5 +15,10 @@ router.get("/averageOfTagNumber2", userController.averageOfTagNumber2)
 router.get("/countEnimTagUsers", userController.countEnimTagUsers)
 router.get("/findInactiveUser", userController.findInactiveUser)
 router.get("/specialPhoneNumber", userController.specialPhoneNumber)
+router.get("/recentRegistered", userController.recentRegistered)
+router.get("/categorizeUser", userController.categorizeUser)
+router.get("/secondTagAd", userController.secondTagAd)
+router.get("/findUserWithEnimId", userController.findUserWithEnimId)
+router.get("/usaLocatedCompany", userController.usaLocatedCompany)
 
 module.exports = router
